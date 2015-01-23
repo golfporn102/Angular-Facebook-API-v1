@@ -21,10 +21,66 @@
   <script type="text/javascript" src="js/index.js"></script>
 </head>
 <body ng-app="buttonsDemo1">
-  <div ng-controller="AppCtrl">
-  <button ng-click="onLogin()">Login</button>
+  <div class='header' ng-controller="Userlogin">
+    <md-button md-no-ink class="md-primary" ng-hide="islogin" ng-click="onLogin()">Login</md-button>
+    <md-button md-no-ink class="md-primary" ng-show="islogin" ng-click="onLogout()">Logout</md-button>
   </div> 
-</div>
+  
+  <div ng-controller="Pages">
 
+    <div>
+      <h1> Page select</h1>
+      <md-button class="md-raised" ng-repeat="(key, value) in pages" ng-click="onSelectedPage(key)">{{ value.name }}</md-button>
+    </div>
+
+    <div ng-controller="Conversations" layout="row">
+        <div flex class="conversations">
+          <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">
+              <span> Conversations </span>
+            </h1>
+          </md-toolbar>
+          <md-content>
+            <md-list>
+              <md-item ng-repeat="(key, conversation) in conversations.data">
+                <md-item-content>
+                  <div class="md-tile-left">
+                    <img ng-src="{{ conversation.interlocutor.cover }}" class="face" alt="{{item.who}}">
+                  </div>
+                  <div class="md-tile-content">
+                     <h3>{{ conversation.interlocutor.name }}</h3>
+                  </div>
+                </md-item-content>
+                <md-divider md-inset ng-if="!$last"></md-divider>
+              </md-item>
+            </md-list>
+          </md-content>
+        </div>
+
+        <div ng-controller="Messages" flex class="messages">
+           <md-toolbar class="md-theme-light">
+            <h1 class="md-toolbar-tools">
+              <span> Messages </span>
+            </h1>
+          </md-toolbar>
+          <md-content>
+            <md-list>
+              <md-item ng-repeat="(key, conversation) in conversations.data">
+                <md-item-content>
+                  <div class="md-tile-left">
+                    <img ng-src="{{item.face}}" class="face" alt="{{item.who}}">
+                  </div>
+                  <div class="md-tile-content">
+                    <h3>{{ conversation.interlocutor.name }}</h3>
+                  </div>
+                </md-item-content>
+                <md-divider md-inset ng-if="!$last"></md-divider>
+              </md-item>
+            </md-list>
+          </md-content>
+        </div>
+    </div>
+  </div>
+ 
 </body>
 </html>

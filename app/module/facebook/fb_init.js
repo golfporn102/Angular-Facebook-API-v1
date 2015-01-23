@@ -3,9 +3,11 @@
 	
 	
 	var currentuser = null; 
-	
+	var pages = null;
+	var currentpage = null;
 	
 	function checklogin(response, callback) {
+		
 		if (response.status == "connected") {
 				
 			currentuser = response.authResponse;
@@ -22,7 +24,6 @@
 				
 		}
 	}
-
 	
 	var facebook = {};
 	
@@ -46,11 +47,73 @@
 			checklogin(response, callback);
 		});
 	}
+	facebook.getCurrentuser = function() {
+		return currentuser;
+	}
 	facebook.login = function( callback ) {
 		FB.login( function(response){
 			checklogin(response, callback);
 		});
 	}
+	facebook.logout = function() {
+		FB.logout();
+	}
+
+	
+	// ================== pages Facebook ======================
+	facebook.loadPages = function( callback ) {
+		FB.api('/me/accounts', function( response ){
+			pages = response.data;
+
+			console.group(" Pages : ");
+			console.log( pages );
+			console.groupEnd();
+			
+			callback( pages );
+		})
+	}
+	facebook.setCurrentPage = function( key ) {
+		currentpage = pages[key];
+	}
+	facebook.getCurrentPage = function() {
+		return currentpage;
+	}
+	facebook.loadConversations = function( callback ) {
+		
+		var url = '/' + currentpage.id + '/conversations';
+		var object = {'access_token'  : currentpage.access_token};
+		
+
+		FB.api( url, object , function( response ) {
+			console.log("AAA");
+			callback( response );
+		});
+	}
+
+	facebook.addObjectInterlocutor = function ( conversation ) {
+		
+		var pages_id = facebook.getCurrentPage().id;
+		
+		var senders = conversation.senders.data;
+
+		if( senders[0].id !== pages_id ) {
+			conversation.interlocutor = senders[0];
+		}
+		else {
+			conversation.interlocutor = senders[1];
+		}
+		return conversation;
+	}
+
+
+
+	// ======================= User Facebook ============================
+	facebook.loadUser = function(user_id, callback) {
+		FB.api('/' + user_id + '/picture', function( response ) {
+			callback( response );
+		});	
+	}
+
 	// angular.module('Facebook',[])
 
 	// .provider('FB_init', function() {
@@ -140,10 +203,52 @@
 			}
 		}
 	});
-	app.service('FB_User', function(){
+	app.service('FB_UserLogin', function(){
 		this.login = facebook.login;
+		this.getLoginStatus = facebook.getLoginStatus;
+		this.logout = facebook.logout;
+	});
+	
+	app.service('FB_Page', function( $interval ) {
+		
+		this.loadPages = function(callback) {
+			
+			var stop = $interval( function(){
+				if(facebook.getCurrentuser()) {
+					$interval.cancel(stop);
+					facebook.loadPages(callback);
+				}
+			},3000)
+		}
+		this.setCurrentPage = facebook.setCurrentPage;
+		
+		this.getCurrentPage = facebook.getCurrentPage;
+		
+		this.loadConversations = function( callback) {
+			
+			facebook.loadConversations( function( response ) {
+				console.log ( response);
+				var data = [];
+				
+				
+				for( var key in response.data) {
+					data.push( facebook.addObjectInterlocutor ( response.data[key] ) );
+				}
+				
+				response.data = data;
+				console.group(" conversations : ");
+				console.log( response );
+				console.groupEnd();
+
+				callback( response );
+			})
+		}
 		
 	});
+
+	app.service('FB_User', function(){
+		this.loadUser = facebook.loadUser;
+	})
 })();
 
 
