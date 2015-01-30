@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+	
+  <!-- css -->
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="bower_components/angular-material/angular-material.css">
+	
+  <!-- angular.js -->
+	<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+  <script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+  <script type="text/javascript" src="bower_components/angular-aria/angular-aria.js"></script>
+  <script type="text/javascript" src="bower_components/angular-material/angular-material.js"></script>
+  <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script type="text/javascript" src="bower_components/hammerjs/hammer.js"></script>
+
+  <!-- require js -->
+  <script type="text/javascript" src="module/requirejs/require.js"></script>
+  
+  <!-- facbook api -->
+	<script type="text/javascript" src="module/facebook/fb_sdk.js"></script>
+  <!-- <script type="text/javascript" src="module/facebook/fb_init.js"></script> -->
+ 
+	<!-- index -->
+  <script type="text/javascript" src="js/app.js"></script>
+</head>
+<body ng-app="app1">
+  <div ui-view></div>
+
+
+  <!-- service -->
+  <script type="text/javascript" src="service/messaging.js"></script>
+  <script type="text/javascript" src="service/parseSDK.js"></script>
+  <script type="text/javascript" src="service/parseDB.js"></script>
+
+  <!-- directive -->
+  <script type="text/javascript" src="directive/menu_panel/menu_panel.js"></script>
+
+  <!-- js -->
+  <script type="text/javascript" src="js/router.js"></script>
+  <script type="text/javascript" src="js/initapp_page.js"></script>
+  <script type="text/javascript" src="js/login_page.js"></script>
+  <script type="text/javascript" src="js/display_page.js"></script>
+  <script type="text/javascript" src="js/manage_page.js"></script>
+</body>
+</html>
