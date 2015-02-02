@@ -5,8 +5,17 @@
 </md-toolbar>
 
 <div layout="row" layout-wrap>
-  <div flex="33">
-    <menu-panel></menu-panel>
+  	<div ng-controller="panelGroupCtrl"> 
+  		<div flex="33">
+	  		<md-card ng-repeat="(key, list) in lists">
+				<h3 ng-click="showList_onClick()"> {{list.name}} </h3>
+		
+				<div ng-show="isshow">
+					<div ng-repeat="(key, value) in list.data">{{ value.name }}</div>
+				</div>
+				
+			</md-card>
+		</div>
   </div>
   <div flex="55">
     [flex="55"]

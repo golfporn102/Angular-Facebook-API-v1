@@ -1,0 +1,19 @@
+<md-dialog aria-label="Mango (Fruit)">
+  <md-content>
+    <md-subheader class="md-sticky-no-effect"> insert group </md-subheader>
+      <md-input-container flex>
+        <label>name group</label>
+        <input ng-model="insertgroup">
+      </md-input-container>
+  </md-content>
+  <div class="md-actions" layout="row">
+
+    <span flex></span>
+    <md-button ng-click="answer('false')">
+     cancel
+    </md-button>
+    <md-button ng-click="answer(insertgroup)" class="md-primary">
+      ok
+    </md-button>
+  </div>
+</md-dialog>

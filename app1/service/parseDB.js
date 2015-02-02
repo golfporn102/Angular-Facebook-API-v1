@@ -1,4 +1,4 @@
-angular.module('app1').factory('parseDB', function (events,messaging){
+angular.module('app1').factory('parseDB', function (events, messaging){
 	var parseAppId = '';
 	var javaScriptKey = '';
 	var facebookAppId = '';
@@ -71,6 +71,29 @@ angular.module('app1').factory('parseDB', function (events,messaging){
 		return Parse.User.current()
 	}
 
+	var parseSavingObjects = function (parseclass, data, callback) {
+		var ObjectDB = Parse.Object.extend( parseclass );
+		var objectDB = new ObjectDB();
+
+		objectDB.save( data , {
+			success: function (objectDB) {
+				callback(objectDB);
+			},
+			error: function (objectDB, error) {
+				alert('Failed to create new object, with error code: ' + error.message);
+			}
+		});
+	
+	}
+
+	var insertDataToGroupTable = function (data) {
+		var object = 'Group';
+		parseSavingObjects( object, data, function( results) {
+			console.log(results);
+			messaging.publish(events.DB.GROUP.message.INSERT_SUCCESS, [results]);
+		});
+	}
+
 	var service = {
 		
 		setParseAppId    : setParseAppId,
@@ -84,6 +107,8 @@ angular.module('app1').factory('parseDB', function (events,messaging){
 		getCurrentUser   : getCurrentUser,
 		parseLogin       : parseLogin,
 		parseLogout      : parseLogout,
+		parseSavingObjects 		: parseSavingObjects,
+		insertDataToGroupTable 	: insertDataToGroupTable
 
 	}
 

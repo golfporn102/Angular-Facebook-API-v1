@@ -1,1 +1,36 @@
 <h1>manage</h1>
+<md-button class="md-raised" ng-click="selectManage_onClick(0)"> add page facebook   </md-button>
+<md-button class="md-raised" ng-click="selectManage_onClick(1)"> Edit page facebook  </md-button>
+<md-button class="md-raised" ng-click="selectManage_onClick(2)"> Delete age facebook </md-button>
+
+<div ng-show="content_page == 0">
+	<md-card>
+		<md-card-content>
+			Page Add
+			<md-input-container flex>
+        		<label>URL of facebookpage</label>
+        		<input ng-model="page.url">
+      		</md-input-container>
+
+      		<select ng-model="page.group" ng-options="pageGroup.name for pageGroup in pageGroups">
+  			</select>
+			<br>
+			<md-button class="md-raised" ng-click="insertPage()"> insert page </md-button>
+
+		</md-card-content>
+	</md-card>
+</div>
+<div ng-show="content_page == 1">
+	<md-card>
+		<md-card-content>
+			Page Edit
+		</md-card-content>
+	</md-card>
+</div>
+<div ng-show="content_page == 2">
+	<md-card>
+		<md-card-content>
+			Page Delete
+		</md-card-content>
+	</md-card>
+</div>
