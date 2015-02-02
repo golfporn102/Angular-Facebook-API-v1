@@ -3,23 +3,34 @@
         <span>Pages</span>
       </h2>
 </md-toolbar>
+<button ng-click="logout_onClick()"> Logout </button>
 
 <div layout="row" layout-wrap>
-  	<div ng-controller="panelGroupCtrl"> 
-  		<div flex="33">
-	  		<md-card ng-repeat="(key, list) in lists">
-				<h3 ng-click="showList_onClick()"> {{list.name}} </h3>
-		
-				<div ng-show="isshow">
-					<div ng-repeat="(key, value) in list.data">{{ value.name }}</div>
-				</div>
-				
+  	<div flex="33"> 
+  		<div ng-controller="panelGroupCtrl">
+	  		<md-card ng-repeat="(key, pageGroup) in pageGroups">
+	  			<md-content>
+					<h3 ng-click="showList_onClick()">{{ pageGroup.attributes.name }}</h3>
+					<div ng-repeat="(key, page) in pageGroup.pages" >
+						<div ng-click="showPage_onClick( page )"> {{ page.attributes.pageFB.name }} </div>
+					</div>
+				</md-content>
 			</md-card>
 		</div>
-  </div>
-  <div flex="55">
-    [flex="55"]
-  </div>
+  	</div>
+  	<div flex="55">
+    	<div ng-controller="panelPageCtrl">
+    		<div ng-repeat="(key, feed) in feeds">
+	    		<md-card>
+					<md-content>
+						<h4> {{ feed.from.name }}</h4>
+						<p> {{ feed.updated_time }} </p>
+
+						<p> {{ feed.message }} </p>
+					</md-content>
+	    		</md-card>
+    		</div>
+    	</div>
+  	</div>
 </div>
 
-<button ng-click="logout_onClick()"> Logout </button>

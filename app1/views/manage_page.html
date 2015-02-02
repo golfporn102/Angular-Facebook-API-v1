@@ -10,12 +10,14 @@
 			<md-input-container flex>
         		<label>URL of facebookpage</label>
         		<input ng-model="page.url">
+        		<select ng-model="page.page" ng-options="pageFacebook.name for pageFacebook in pageFacebooks">
+  				</select>
       		</md-input-container>
 
-      		<select ng-model="page.group" ng-options="pageGroup.name for pageGroup in pageGroups">
+      		<select ng-model="page.group" ng-options="pageGroup.attributes.name for pageGroup in pageGroups">
   			</select>
 			<br>
-			<md-button class="md-raised" ng-click="insertPage()"> insert page </md-button>
+			<md-button class="md-raised" ng-click="insertPageButton_onClick()"> insert page </md-button>
 
 		</md-card-content>
 	</md-card>

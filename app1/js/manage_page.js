@@ -1,16 +1,38 @@
 angular.module('app1').controller('manage_pageCtrl', function ( $scope, parseDB, $mdDialog, messaging, events ) {
 	
-	$scope.pageGroups = [
-		{ 'id' : '0' , 	'name' : "group0"},
-		{ 'id' : '1' , 	'name' : "group1"},
-		{ 'id' : '2' , 	'name' : "group2"},
-		{ 'id' : '-999','name' : "Add Group" }
-	];
+	$scope.pageGroups = [];
 	$scope.page = {};
-	$scope.page.group = $scope.pageGroups[0];
+	$scope.pageFacebooks;
+	
+	var objAddGroup = { 
+		'id' : '-999',
+		'attributes' : {'name' : 'Add Group'}
+	};
 
-	$scope.selectManage_onClick = function (index) {
-		$scope.content_page = index;
+	var FBapiRetrievingDataFromMeGroupsSuccess = function (results) {
+		console.log(results);
+		$scope.$apply( function() {
+			$scope.pageFacebooks = results.data;
+			$scope.page.page = $scope.pageFacebooks[0];
+		});
+	};
+
+	var groupTableUpdatedSuccess = function (results) {
+		results.name = results.attributes.name;
+
+		$scope.$apply( function () {
+			$scope.pageGroups[ $scope.pageGroups.length-1 ] = results;
+			$scope.pageGroups.push( objAddGroup );
+		});
+		
+		console.log($scope.pageGroups);
+	};
+
+	var groupTableRetrieveSuccess = function (results) {
+		console.log( results );
+		$scope.pageGroups = results;
+		$scope.pageGroups.push( objAddGroup );
+		$scope.page.group = $scope.pageGroups[0];
 	};
 
 	var insertGroup_ok = function (answer) {
@@ -22,19 +44,25 @@ angular.module('app1').controller('manage_pageCtrl', function ( $scope, parseDB,
 		$scope.alert = 'You cancelled the dialog.';
 	};
 
-	var groupTableUpdatedSuccess = function (results) {
-		console.log( results );
-		results.name = results.attributes.name;
-		$scope.pageGroups.push(results);
-		console.log($scope.pageGroups);
-
+	$scope.selectManage_onClick = function (index) {
+		
+		$scope.content_page = index;
+		
+		if(index === 0) parseDB.FBapiRetrieveDataFromMeGroups(); // load Groups form facebook
 	};
 
-	messaging.subscribe(events.DB.GROUP.message.INSERT_SUCCESS , groupTableUpdatedSuccess);
-	
+	$scope.insertPageButton_onClick = function () {
+		var data = { 
+			'pageFB' : $scope.page.page,
+			'groupId': $scope.page.group.id 
+		};
+		
+		parseDB.insertDataToPageTable( data );
+	};
 
 	$scope.$watch('page.group', function (newValue, oddValue) {
-		if(newValue.id === '-999' ) {
+		
+		if(newValue != null && newValue.id === '-999' ) {
 			
 			$mdDialog.show({
       			controller: DialogController,
@@ -43,6 +71,15 @@ angular.module('app1').controller('manage_pageCtrl', function ( $scope, parseDB,
     		.then( insertGroup_ok , insertGroup_cancel);
 		};
 	});
+	
+	parseDB.retrieveDataFromGroupTable(); 
+	
+	messaging.subscribe( events.FBAPI.GROUP.message.RETRIEVE_SUCCESS , FBapiRetrievingDataFromMeGroupsSuccess );
+	
+	messaging.subscribe( events.DB.GROUP.message.RETRIEVE_SUCCESS , groupTableRetrieveSuccess );
+	//messaging.publish( events.DB.GROUP.message.RETRIEVE_SUCCESS );
+	messaging.subscribe( events.DB.GROUP.message.INSERT_SUCCESS , groupTableUpdatedSuccess );
+	
 });
 
 function DialogController($scope, $mdDialog) {
@@ -53,7 +90,7 @@ function DialogController($scope, $mdDialog) {
   	$scope.cancel = function () {
     	$mdDialog.cancel();
   	};
-  
+   
   	$scope.answer = function (answer) {
     	$mdDialog.hide(answer);
   	};

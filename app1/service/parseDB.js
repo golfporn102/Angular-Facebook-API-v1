@@ -43,7 +43,7 @@ angular.module('app1').factory('parseDB', function (events, messaging){
 
 	var getCurrentUser = function () {
 		return Parse.User.current();
-	}
+	};
 
 	var parseLogin = function () {
 		console.log(messaging);
@@ -64,12 +64,12 @@ angular.module('app1').factory('parseDB', function (events, messaging){
 			    alert("User cancelled the Facebook login or did not fully authorize.");
 			}
 		});
-	}
+	};
 	
 	var parseLogout = function () {
 		Parse.User.logOut();
 		return Parse.User.current()
-	}
+	};
 
 	var parseSavingObjects = function (parseclass, data, callback) {
 		var ObjectDB = Parse.Object.extend( parseclass );
@@ -77,22 +77,81 @@ angular.module('app1').factory('parseDB', function (events, messaging){
 
 		objectDB.save( data , {
 			success: function (objectDB) {
-				callback(objectDB);
+				callback( objectDB );
 			},
 			error: function (objectDB, error) {
 				alert('Failed to create new object, with error code: ' + error.message);
 			}
 		});
 	
-	}
+	};
 
+	var parseRetrievingObject = function (parseclass, callback) {
+		var ObjectDB = Parse.Object.extend( parseclass );
+		var objectDB = new Parse.Query( ObjectDB );
+		console.log( objectDB);
+		objectDB.find( {
+			success: function (objectDB) {
+				callback( objectDB )
+			},
+			error: function (object, error) {
+				alert(error);
+			}
+		} );
+	};
+
+	// ==============  insert update date retrieve Parse =========================
 	var insertDataToGroupTable = function (data) {
 		var object = 'Group';
-		parseSavingObjects( object, data, function( results) {
+		
+		parseSavingObjects( object, data, function(results) {
 			console.log(results);
 			messaging.publish(events.DB.GROUP.message.INSERT_SUCCESS, [results]);
 		});
-	}
+	};
+
+	var retrieveDataFromGroupTable = function () {
+		var object = 'Group';
+
+		parseRetrievingObject( object, function (results) {
+			messaging.publish(events.DB.GROUP.message.RETRIEVE_SUCCESS, [results]);
+		});
+	};
+
+	var insertDataToPageTable = function (data) {
+		var object = 'Page';
+
+		parseSavingObjects( object, data, function (results) {
+			messaging.publish( events.DB.PAGE.message.RETRIEVE_SUCCESS, [results] );
+		});
+	};
+
+	var retrieveDataFromPageTable = function () {
+		var object = 'Page';
+
+		parseRetrievingObject( object, function (results) {
+			messaging.publish(events.DB.PAGE.message.RETRIEVE_SUCCESS, [results]);
+		});
+	};
+
+	
+	//  ======================== retrieve Facebook =================================
+	var FBapiRetrieveDataFromMeGroups = function () {
+		var url = 'me/groups';
+
+		var token = getCurrentUser().attributes.authData.facebook.access_token;
+		
+		FB.api( url, {'access_token' : token } ,function (response) {
+			messaging.publish( events.FBAPI.GROUP.message.RETRIEVE_SUCCESS, [response] );
+		});
+	};
+	var FBapiRetrieveDataFromPage = function (pageid) {
+		var url = pageid;
+		var token = getCurrentUser().attributes.authData.facebook.access_token;
+		FB.api( url + '/feed', {'access_token' : token }, function (response) {
+			messaging.publish( events.FBAPI.PAGE.message.RETRIEVE_SUCCESS, [response] );
+		});
+	};
 
 	var service = {
 		
@@ -107,8 +166,13 @@ angular.module('app1').factory('parseDB', function (events, messaging){
 		getCurrentUser   : getCurrentUser,
 		parseLogin       : parseLogin,
 		parseLogout      : parseLogout,
-		parseSavingObjects 		: parseSavingObjects,
-		insertDataToGroupTable 	: insertDataToGroupTable
+		parseSavingObjects 			: parseSavingObjects,
+		insertDataToGroupTable 		: insertDataToGroupTable,
+		retrieveDataFromGroupTable	: retrieveDataFromGroupTable,
+		insertDataToPageTable		: insertDataToPageTable,
+		FBapiRetrieveDataFromMeGroups	: FBapiRetrieveDataFromMeGroups,
+		retrieveDataFromPageTable 	: retrieveDataFromPageTable,
+		FBapiRetrieveDataFromPage	: FBapiRetrieveDataFromPage
 
 	}
 
