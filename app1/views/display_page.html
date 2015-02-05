@@ -1,20 +1,42 @@
  <md-toolbar>
-      <h2 class="md-toolbar-tools">
-        <span>Pages</span>
-      </h2>
+    <div layout="row" layout-wrap>
+        <div flex class="md-toolbar-tools">
+        	<span>Pages Join</span>
+        </div>
+		<div flex class="md-toolbar-tools">
+			<div class='toolbar'>
+				<a><img class='toolbar-image userbox-image' ng-src="{{user.picture}}"></a>
+				<a><span class='toolbar-name'>{{ user.name }}</span></a>
+			</div>
+			<md-button ng-click="logout_onClick()">Logout</md-button>
+        </div>
+   </div>
+
 </md-toolbar>
-<button ng-click="logout_onClick()"> Logout </button>
+
 
 <div layout="row" layout-wrap>
   	<div flex="33"> 
   		<div ng-controller="panelGroupCtrl">
 	  		<md-card ng-repeat="(key, pageGroup) in pageGroups">
-	  			<md-card-content>
-					<h3 ng-click="showList_onClick()">{{ pageGroup.attributes.name }}</h3>
-					<div ng-repeat="(key, page) in pageGroup.pages" >
-						<div ng-click="showPage_onClick( page )"> {{ page.attributes.pageFB.name }} </div>
-					</div>
-				</md-card-content>
+	  			
+	  			<md-toolbar class="md-theme-light pointer" ng-click="showPages_onClick(pageGroup)">
+   	 				<h3 class="md-toolbar-tools">
+      					<span>{{ pageGroup.attributes.name }}</span>
+    				</h3>
+  				</md-toolbar>
+	  				
+	  			<md-list>
+     				<md-item class="pointer" ng-repeat="(key, page) in pageGroup.pages">
+        				<md-item-content>
+          					<div class="md-tile-content">
+            					<div ng-click="showPage_onClick( page )"><h3> {{ page.attributes.pageFB.name }} </h3></div>
+          					</div>
+        				</md-item-content>
+        				<md-divider ng-if="!$last"></md-divider>
+      				</md-item>
+   	 			</md-list>
+				
 			</md-card>
 		</div>
   	</div>
@@ -23,17 +45,26 @@
     		<div ng-repeat="feed in feeds">
 	    		<md-card>
 					<md-card-content>
-						<h4> {{ feed.from.name }}</h4>
-						<p> {{ feed.updated_time }} </p>
-
-						<p> {{ feed.message }} </p>
-						<hr>
-						<h3> comment </h3>
-						<div ng-repeat="comment in feed.comments.data">
-							<h5> {{ comment.from.name }} </h5>
-							<p> {{ comment.message }} </p>
+						<div class='userbox'>
+							<a><img class='userbox-image userimage' ng-src="{{feed.from.picture}}"></a>
+							<a><span class='userbox-name'> {{ feed.from.name }} </span></a>
+							<div>{{ feed.updated_time }}</div>
 						</div>
-						<hr>
+						<div ng-bind-html="newLines(feed.message)"></div><br>
+						
+						<div ng-repeat="comment in feed.comments.data">
+							<div class='commentbox'>
+								<a><img class='userbox-image userimage' ng-src="{{comment.from.picture}}"></a>
+								<a><span class='userbox-name'> {{ comment.from.name }} </span></a>
+								<div ng-bind-html="newLines(comment.message)"></div>
+							</div>
+							
+						</div>
+						
+						<md-input-container>
+      						<label>comment</label>
+      						<input ng-model="user.comment" type="text">
+    					</md-input-container>
 					</md-card-content>
 	    		</md-card>
     		</div>

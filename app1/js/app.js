@@ -1,4 +1,4 @@
-angular.module('app1', ['ngMaterial','ui.router']);
+angular.module('app1', ['ngMaterial','ui.router', 'ngSanitize']);
 
 angular.module('app1').constant('events', {
 	message : {
@@ -64,6 +64,22 @@ angular.module('app1').constant('events', {
 				RETRIEVE			: '_FBAPI_PAGE_RETRIEVE',
 				RETRIEVE_SUCCESS	: '_FBAPI_PAGE_RETRIEVE_SUCCESS',
 				RETRIEVE_ERROR		: '_FBAPI_PAGE_RETRIEVE_ERROR',
+			}
+		},
+		PAGES : {
+			url: 'me/groups',
+			message : {
+				RETRIEVE			: '_FBAPI_PAGES_RETRIEVE',
+				RETRIEVE_SUCCESS	: '_FBAPI_PAGES_RETRIEVE_SUCCESS',
+				RETRIEVE_ERROR		: '_FBAPI_PAGES_RETRIEVE_ERROR',
+			}
+		},
+		PAGES1 : {
+			url: 'me/groups',
+			message : {
+				RETRIEVE			: '_FBAPI_PAGES1_RETRIEVE',
+				RETRIEVE_SUCCESS	: '_FBAPI_PAGES1_RETRIEVE_SUCCESS',
+				RETRIEVE_ERROR		: '_FBAPI_PAGES1_RETRIEVE_ERROR',
 			}
 		}
 	}

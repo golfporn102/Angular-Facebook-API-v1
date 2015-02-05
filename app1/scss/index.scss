@@ -1,3 +1,40 @@
+$blue :#45619d;
+$gray : #E9E9E9;
 body {
 	background: #333;
+}
+.userbox {
+	min-height: 60px;
+}
+.commentbox {
+	min-height: 60px;
+	padding: 5px;
+}
+.userimage {
+	width: 50px;
+	height: 50px;
+}
+.userbox-image{
+	margin-right: 10px;
+	float: left;
+}
+.userbox-name {
+	color: $blue;
+	font-weight: bold;
+	line-height: 25px;
+}
+.commentbox {
+	border: 1px solid $gray;
+	//boder-color: $gray;
+}
+.pointer {
+	cursor: pointer;
+}
+.toolbar-image {
+	width: 40px;
+	height: 40px;
+}
+.toolbar-name {
+	
+	line-height: 40px;
 }
